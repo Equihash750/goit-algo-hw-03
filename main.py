@@ -18,10 +18,19 @@ def get_numbers_ticket(min, max, quantity):
     """
     Генерує список унікальних випадкових чисел для лотерейного квитка.
     """
-    ticket_list = random.sample(range(min, max), quantity)
-    return ticket_list
+    ticket_list = []
+    try:
+        if 1 <= min < max <=1000:
+            ticket_list = random.sample(range(min, max), quantity)
+            ticket_list.sort()
+            return ticket_list
+        else:
+            return ticket_list
+    except ValueError:
+        return ticket_list
 
-lottery_numbers = get_numbers_ticket(1, 49, 6)
+
+lottery_numbers = get_numbers_ticket(1, 100, 8)
 print("Ваші лотерейні числа:", lottery_numbers)
 
 
@@ -31,12 +40,12 @@ def normalize_phone(phone_number):
     Видаляє зайві символи, додає код країни якщо потрібно.
     """
     clean_numb = re.sub(r"\D", '', phone_number)
-    if not clean_numb.startswith("+"):
-        if clean_numb.startswith("380"):
-            clean_numb = "+" + clean_numb
-        else:
-            clean_numb = "+38" + clean_numb
-    return clean_numb
+    had_plus = phone_number.strip().startswith("+")
+    if had_plus:
+        return "+" + clean_numb
+    if clean_numb.startswith("380"):
+        return "+" + clean_numb
+    return "+38" + clean_numb
 
 raw_numbers = [
     "067\\t123 4567",
@@ -47,7 +56,8 @@ raw_numbers = [
     "     0503451234",
     "(050)8889900",
     "38050-111-22-22",
-    "38050 111 22 11   ",
+    "38050 111 22 11   ", "+48 123 456 789",
+    " 123 456 459", "8 123 456 789"
 ]
 
 sanitized_numbers = [normalize_phone(num) for num in raw_numbers]
